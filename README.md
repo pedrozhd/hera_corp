@@ -1,9 +1,9 @@
 # Hera Corporation
 
 ## Alunos
-Pedro Henrique Dias França - 561940
-Luiz Gustavo Gonçalves - 564495
-Olavo Porto Neves - 563558
+- Pedro Henrique Dias França - 561940
+- Luiz Gustavo Gonçalves - 564495
+- Olavo Porto Neves - 563558
 
 ## Visão Geral
 A Hera é uma startup focada em reduzir taxas de absenteísmo em teleconsultas para hospitais. Nosso objetivo é garantir preparo, engajamento e qualidade em cada etapa da jornada do paciente, aumentando a adesão e a efetividade das consultas remotas.
