@@ -1,0 +1,41 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 0px;
+}
+
+main {
+    margin: 0px 150px;
+}
+
+@media (max-width: 991px) {
+    main {
+        margin: 0px 50px;
+    }
+}
+header h1 a {
+    margin: 0;
+    text-transform: uppercase;
+    color: #000000;
+}
+ 
+
+.container__faq {
+    padding-top: 20px;
+    margin: 0px auto;
+}
+
+main > h2 {
+    color: #285de1;
+}
+
+main > h4 {
+    padding-bottom: 3px;
+}
+
+main > p {
+    text-align: justify;
+}
+
+footer {
+    margin-top: 0px;
+}
