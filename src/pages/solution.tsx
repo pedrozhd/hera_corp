@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const Solution = () => {
     return (
         <body>
@@ -29,9 +31,9 @@ const Solution = () => {
                 <p>
                     Nosso projeto visa facilitar o acesso às teleconsultas do IMREA para pacientes com dificuldades tecnológicas, como idosos ou pessoas com deficiência, por meio de mensangens via whatssap, porém usaremos telegram como demostração. Essas mensagens, já verificam as informações do paciente e já manda um link direto para a página da consulta. 
                 </p>
-                <button className="button__solucao">
-                <a href="./solucaoBeta.html">Veja a solução</a>
-                </button>
+                <Link to="/betasolution" className="button__solucao">
+                    Veja a solução
+                </Link>
             </div>
         </section>
     </main>

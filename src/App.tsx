@@ -8,6 +8,7 @@ import Faq from './components/faq'
 import Contact from './components/contact'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Solution from './pages/solution'
+import BetaSolution from './pages/betasolution'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           }
         />
         <Route path="/solution" element={<Solution />} />
+        <Route path="/betasolution" element={<BetaSolution />} />
       </Routes>
       <Footer />
     </BrowserRouter>
