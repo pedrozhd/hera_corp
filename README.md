@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Hera Corporation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Alunos
+Pedro Henrique Dias França - 561940
+Luiz Gustavo Gonçalves - 564495
+Olavo Porto Neves - 563558
 
-Currently, two official plugins are available:
+## Visão Geral
+A Hera é uma startup focada em reduzir taxas de absenteísmo em teleconsultas para hospitais. Nosso objetivo é garantir preparo, engajamento e qualidade em cada etapa da jornada do paciente, aumentando a adesão e a efetividade das consultas remotas.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Após a primeira consulta presencial, entramos em ação com um sistema de automações integrado ao WhatsApp — inicialmente via Telegram, por questões de custo. Nossa plataforma:
 
-## React Compiler
+- Envia vídeos e guias de acesso passo a passo.
+- Dispara lembretes diários e checkpoints de preparo.
+- Oferece gamificação e status de jornada para incentivar o progresso.
+- Mantém comunicação humanizada em cada contato.
+- Inclui um verificador de pré-consulta (teste de câmera e som).
+- Permite adicionar um acompanhante, que recebe os mesmos conteúdos.
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+Dessa forma, garantimos que o paciente esteja tecnicamente preparado, engajado e bem orientado, reduzindo faltas e imprevistos em teleconsultas.
 
-## Expanding the ESLint configuration
+## Pilares da Solução
+- Automação de comunicação (WhatsApp/Telegram) com mensagens segmentadas.
+- Conteúdo educativo multimídia (vídeos, guias e orientações claras).
+- Lembretes inteligentes e rotinas diárias de engajamento.
+- Gamificação e status da jornada para mostrar progresso.
+- Verificador técnico de pré-consulta (câmera, microfone e acesso).
+- Suporte a acompanhante com recebimento de comunicações paralelas.
+- Linguagem e tom humanizados em todas as interações.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Estrutura do Projeto
+Este repositório contém o front-end da plataforma, construído com Vite, React e TypeScript.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Estrutura principal de diretórios:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+hera_corporation/
+├─ projeto_antigo/           # Protótipos/ativos estáticos da versão anterior (HTML/CSS/JS puros)
+│  ├─ html/
+│  ├─ scripts/
+│  └─ styles/
+├─ public/                   # Arquivos estáticos servidos diretamente
+├─ src/                      # Código-fonte da aplicação (React + TS)
+│  ├─ assets/                # Imagens, ícones e outros assets
+│  ├─ components/            # Componentes reutilizáveis (ex.: header, aboutproject, contact, faq)
+│  ├─ pages/                 # Páginas/rotas da aplicação (ex.: about, betasolution, faqpage)
+│  ├─ utils/                 # Funções utilitárias e helpers
+│  ├─ App.css                # Estilos globais/escopados do App
+│  └─ App.tsx                # Componente raiz da aplicação
+├─ index.html                # Template HTML principal usado pelo Vite
+├─ vite.config.ts            # Configuração do Vite
+├─ tsconfig*.json            # Configurações TypeScript do projeto
+├─ eslint.config.js          # Regras de lint
+├─ package.json              # Dependências e scripts NPM
+└─ README.md                 # Este documento

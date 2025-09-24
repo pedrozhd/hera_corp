@@ -4,7 +4,7 @@ import { HashLink } from 'react-router-hash-link'
 const Header = () => {
   return (
     <header>
-      <h1><Link to="/">Conecta Saúde</Link></h1>
+      <h1><Link to="/">Hera Corp.</Link></h1>
       <div className="menu_overlay">
         <button className="close_menu">{/* <img src="../../Images/close.png" alt="imagem close menu" width="20px" height="20px" /> */}</button>
         <aside className="menu_hidden">
