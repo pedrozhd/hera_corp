@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Solution from './pages/solution'
 import BetaSolution from './pages/betasolution'
 import FaqPage from './pages/faqpage'
+import About from './pages/about'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/solution" element={<Solution />} />
         <Route path="/betasolution" element={<BetaSolution />} />
         <Route path="/faqpage" element={<FaqPage />} />
+        <Route path="/about" element={<About />} />
       </Routes>
       <Footer />
     </BrowserRouter>
