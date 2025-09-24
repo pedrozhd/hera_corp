@@ -1,3 +1,5 @@
+import natural from '../assets/Natural User Interface.png'
+
 const BetaSolution = () => {
     return (
       <main className="betasolution">
@@ -6,7 +8,7 @@ const BetaSolution = () => {
           <button className="button__consulta">
             <span>Iniciar Consulta</span>
             <img
-              src="/Images/Natural User Interface.png"
+              src={natural}
               alt="Imagem de clique"
               height={60}
             />

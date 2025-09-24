@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
+import mockup from '../assets/mockup.png'
 
 const Solution = () => {
   return (
     <main className="solution">
       <section className="telemedicina">
         <div className="imagem">
-          <img src="/Images/Rectangle 177.png" alt="Sobre nós" />
+          <img src={mockup} alt="Sobre nós" />
         </div>
         <div className="texto">
           <h4>Sobre a solução</h4>

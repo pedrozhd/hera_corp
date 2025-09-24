@@ -1,11 +1,13 @@
+import about from '../assets/img-pageabout.jpg'
+
 const About = () => {
     return (
       <section className="telemedicina">
         <div className="imagem">
-          <img src="/Images/img-sobre.jpg" alt="Sobre nós" />
+          <img src={about} alt="Sobre nós" />
         </div>
         <div className="texto">
-          <h4>SOBRE NÓS</h4>
+          <h4>Sobre nós</h4>
           <p>
             Bem-vindo ao ConectaSaúde, um projeto inovador desenvolvido para facilitar o acesso à
             saúde digital e melhorar a experiência de pacientes e profissionais do IMREA (Instituto de
