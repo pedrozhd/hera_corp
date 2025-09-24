@@ -9,6 +9,7 @@ import Contact from './components/contact'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Solution from './pages/solution'
 import BetaSolution from './pages/betasolution'
+import FaqPage from './pages/faqpage'
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         />
         <Route path="/solution" element={<Solution />} />
         <Route path="/betasolution" element={<BetaSolution />} />
+        <Route path="/faqpage" element={<FaqPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>
