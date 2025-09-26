@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom'
 import { HashLink } from 'react-router-hash-link'
+import closeIcon from '../assets/close.png'
+import menuIcon from '../assets/Menu.png'
 
 const Header = () => {
   return (
     <header>
       <h1><Link to="/">Hera Corp.</Link></h1>
       <div className="menu_overlay">
-        <button className="close_menu">{/* <img src="../../Images/close.png" alt="imagem close menu" width="20px" height="20px" /> */}</button>
+        <button className="close_menu">
+          <img src={closeIcon} alt="imagem close menu" width="20px" height="20px" />
+        </button>
         <aside className="menu_hidden">
           <ul>
             <li className="item_inicio"><Link to="/">Início</Link></li>
@@ -18,7 +22,7 @@ const Header = () => {
           </ul>
         </aside>
       </div>
-      {/* <img src="../../Images/Menu (1).png" alt="menu hamburguer" className="menu__hamburguer" /> */}
+      <img src={menuIcon} alt="menu hamburguer" className="menu__hamburguer" />
     </header>
   )
 }
