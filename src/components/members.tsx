@@ -29,33 +29,33 @@ const Members = () => {
   const members: MemberData[] = [
     {
       id: '1',
-      name: 'Pedro Costa',
+      name: 'Pedro França',
       role: 'Desenvolvedor Frontend',
       image: pedroFoto,
       bio: 'Especialista em React e TypeScript com 3+ anos de experiência. Apaixonado por criar interfaces intuitivas e acessíveis para aplicações de saúde digital.',
       skills: ['React', 'TypeScript', 'Tailwind CSS', 'Next.js'],
-      github: 'https://github.com/pedro',
-      linkedin: 'https://linkedin.com/in/pedro'
+      github: 'https://github.com/pedrozhd',
+      linkedin: 'https://linkedin.com/in/pedrozhd'
     },
     {
       id: '2', 
-      name: 'Luiz Santos',
+      name: 'Luiz Gonçalves',
       role: 'Desenvolvedor Backend',
       image: luizFoto,
       bio: 'Desenvolvedor backend focado em APIs robustas e seguras. Experiência em sistemas de saúde e integração com dispositivos médicos.',
       skills: ['Node.js', 'Python', 'PostgreSQL', 'Docker'],
-      github: 'https://github.com/luiz',
-      linkedin: 'https://linkedin.com/in/luiz'
+      github: 'https://github.com/luizzggoncalves',
+      linkedin: 'https://www.linkedin.com/in/luiz-gon%C3%A7alves-0378a0205/'
     },
     {
       id: '3',
-      name: 'Olavo Silva',
+      name: 'Olavo Neves',
       role: 'UI/UX Designer', 
       image: olavo,
       bio: 'Designer com foco em experiência do usuário para aplicações médicas. Especialista em design inclusivo e acessibilidade digital.',
       skills: ['Figma', 'Adobe XD', 'Design System', 'Prototipagem'],
-      github: 'https://github.com/olavo',
-      linkedin: 'https://linkedin.com/in/olavo'
+      github: 'https://github.com/olavoneves',
+      linkedin: 'https://www.linkedin.com/in/olavo-neves/'
     }
   ]
 
