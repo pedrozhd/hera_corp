@@ -9,7 +9,11 @@ const AboutCard = ({ title, description, imageSrc }: AboutCardProps) => {
     <section className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 bg-white rounded-lg shadow-md p-8">
       {imageSrc && (
         <div className="flex-1 flex justify-center">
-          <img src={imageSrc} alt={title} className="max-w-full h-auto rounded-lg shadow-sm" />
+          <img 
+            src={imageSrc} 
+            alt={title} 
+            className="max-w-full max-h-[400px] w-auto rounded-lg shadow-sm object-cover" 
+          />
         </div>
       )}
       <div className="flex-1 text-center lg:text-left">

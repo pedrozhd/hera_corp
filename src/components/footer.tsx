@@ -25,8 +25,14 @@ const Footer = () => {
                 </div>
                 
                 <div className="border-t border-blue-500 pt-6">
-                    <p className="text-blue-100 text-sm">© 2025 Conecta Saúde — Transformando o acesso à saúde digital com inovação e cuidado.</p>
+                    <p className="text-blue-100 text-sm">© 2025 Hera Corp. — Transformando o acesso à saúde digital com inovação e cuidado.</p>
                     <p className="text-xs text-blue-300 mt-2">Desenvolvido com  para o futuro da saúde digital</p>
+                    <div className="mt-4 text-xs text-blue-300 space-y-1">
+                        <p>Desenvolvido por:</p>
+                        <p>Pedro Henrique Dias França - RM561940</p>
+                        <p>Luiz Gustavo Gonçalves - RM564495</p>
+                        <p>Olavo Porto Neves - RM563558</p>
+                    </div>
                 </div>
             </div>
         </footer>

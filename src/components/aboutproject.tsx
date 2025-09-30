@@ -10,13 +10,13 @@ const AboutProject = () => {
         <p className="text-xl text-blue-600 font-semibold mb-2">Conectando</p>
         <h2 className="text-3xl lg:text-4xl font-semibold mb-4">Sobre</h2>
         <p className="text-lg leading-relaxed text-gray-700 mb-6">
-          Bem-vindo ao ConectaSaúde, um projeto inovador desenvolvido para facilitar o acesso à
+          Bem-vindo ao Hera Corporation, um projeto inovador desenvolvido para facilitar o acesso à
           saúde digital e melhorar a experiência de pacientes e profissionais do IMREA (Instituto de
           Medicina Física e Reabilitação do HC-FMUSP).
         </p>
         <Link 
           to="/about" 
-          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold transition-all duration-200 shadow-sm hover:bg-blue-700 hover:-translate-x-1 active:translate-y-0.5 focus:outline-2 focus:outline-blue-300 focus:outline-offset-2 self-start"
+          className="inline-block px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg font-semibold transition-all duration-200 shadow-sm hover:bg-blue-700 hover:-translate-x-1 active:translate-y-0.5 focus:outline-2 focus:outline-blue-300 focus:outline-offset-2 mx-auto lg:mx-0 w-fit"
         >
           Veja mais
         </Link>

@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
-import mockup from '../assets/mockup.png'
+import mockup2 from '../assets/mockup2.png'
 
 const Solution = () => {
   return (
     <main className="container mx-auto px-4 py-8">
       <section className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
         <div className="flex-1 flex justify-center">
-          <img src={mockup} alt="Sobre nós" className="max-w-full h-auto rounded-lg shadow-md" />
+          <img src={mockup2} alt="Sobre nós" className="max-w-full h-auto rounded-lg shadow-md" />
         </div>
         <div className="flex-1 text-center lg:text-left">
           <h4 className="text-2xl font-bold mb-4 text-blue-600">Sobre a solução</h4>
