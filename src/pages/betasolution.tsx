@@ -9,10 +9,13 @@ const BetaSolution = () => {
   }
 
   return (
-    <main className="betasolution">
-      <section className="container__cima">
-        <h1>Olá, Sr. Marcili!</h1>
-        <button className="button__consulta" onClick={iniciarConsulta}>
+    <main className="min-h-screen flex items-center justify-center bg-gray-50">
+      <section className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
+        <h1 className="text-3xl font-bold mb-8 text-gray-800">Olá, Sr. Marcili!</h1>
+        <button 
+          className="w-full px-6 py-4 bg-blue-600 text-white rounded-lg font-semibold text-lg transition-all duration-200 shadow-sm hover:bg-blue-700 hover:translate-y-0.5 active:translate-y-0.5 focus:outline-2 focus:outline-blue-300 focus:outline-offset-2" 
+          onClick={iniciarConsulta}
+        >
           <span>Iniciar Consulta</span>
           {/* sua img aqui */}
         </button>
