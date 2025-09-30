@@ -32,6 +32,7 @@ const Footer = () => {
                         <p>Pedro Henrique Dias França - RM561940</p>
                         <p>Luiz Gustavo Gonçalves - RM564495</p>
                         <p>Olavo Porto Neves - RM563558</p>
+                        <p>1TDSR</p>
                     </div>
                 </div>
             </div>
