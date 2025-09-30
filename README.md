@@ -98,9 +98,10 @@ hera_corporation/
 4. Faça o push da branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 🤝 Link do Repositório e do Projeto na Vercel
+## 🤝 Link do Repositório, Projeto na Vercel e Youtube
 - https://github.com/pedrozhd/hera_corp.git
 - https://hera-corporation.vercel.app/
+- https://youtu.be/76jVMzFffsM
 
 ## 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
