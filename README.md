@@ -99,8 +99,8 @@ hera_corporation/
 5. Abra um Pull Request
 
 ## 🤝 Link do Repositório e do Projeto na Vercel
-https://github.com/pedrozhd/hera_corp.git
-https://hera-corporation.vercel.app/
+- https://github.com/pedrozhd/hera_corp.git
+- https://hera-corporation.vercel.app/
 
 ## 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
