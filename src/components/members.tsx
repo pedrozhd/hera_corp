@@ -4,6 +4,8 @@ import pedroFoto from '../assets/pedrofoto.jpg'
 import luizFoto from '../assets/luizfoto.jpg'
 import olavo from '../assets/OlavoFoto.jpg'
 import FloatingElements from './FloatingElements'
+import gitIcon from '../assets/git.png'
+import linkedinIcon from '../assets/linkedin.png'
 
 type MemberData = {
   id: string
@@ -143,15 +145,15 @@ const Members = () => {
                       )}
                     </div>
                     <div className="flex justify-center space-x-3 mt-6">
-                      {member.github && (
+                    {member.github && (
                         <a 
                           href={member.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-2 bg-gray-800 text-white rounded text-sm hover:bg-gray-700"
+                          className="p-2 hover:bg-gray-100 rounded-full transition-all duration-200"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          GitHub
+                          <img src={gitIcon} alt="GitHub" className="w-7 h-7 rounded-full" />
                         </a>
                       )}
                       {member.linkedin && (
@@ -159,10 +161,10 @@ const Members = () => {
                           href={member.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                          className="p-2 hover:bg-blue-50 rounded-lg transition-all duration-200 hover:shadow-sm"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          LinkedIn
+                          <img src={linkedinIcon} alt="LinkedIn" className="w-7 h-7 rounded-lg" />
                         </a>
                       )}
                     </div>
