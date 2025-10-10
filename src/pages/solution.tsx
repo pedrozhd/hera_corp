@@ -18,10 +18,10 @@ const Solution = () => {
             a página da consulta.
           </p>
           <Link 
-            to="/betasolution" 
+            to="/login" 
             className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold transition-all duration-200 shadow-sm hover:bg-blue-700 hover:translate-y-0.5 active:translate-y-0.5 focus:outline-2 focus:outline-blue-300 focus:outline-offset-2"
           >
-            Veja a solução
+            Faça login para ver a solução
           </Link>
         </div>
       </section>

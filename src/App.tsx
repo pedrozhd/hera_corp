@@ -13,6 +13,7 @@ import About from './pages/about'
 import ScrollToTop from './components/scrolltotop'
 import Member from './components/members'
 import FaqAnswer from './components/faqanswer'
+import LoginPage from './pages/LoginPage'
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/betasolution" element={<BetaSolution />} />
         <Route path="/faqpage" element={<FaqPage />} />
         <Route path="/about" element={<About />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>
