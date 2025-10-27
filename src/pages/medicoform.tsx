@@ -4,17 +4,34 @@ import { useNavigate } from 'react-router-dom';
 const MedicoForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    // Dados Pessoais
     nome: '',
     crm: '',
     especialidade: '',
-    telefone: '',
+    status: 'ativo',
+    dataCadastro: new Date().toISOString().split('T')[0],
+    ultimaAtualizacao: new Date().toISOString().split('T')[0],
+    
+    // Contato
+    telefoneDDD: '',
+    telefoneNumero: '',
+    tipoTelefone: 'celular',
     email: '',
+    contatoPreferencial: 'whatsapp',
+    
+    // Horário
     horarioAtendimento: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target as HTMLInputElement;
+    
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -114,16 +131,42 @@ const MedicoForm = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Telefone *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">DDD *</label>
                   <input
-                    type="tel"
-                    name="telefone"
-                    value={formData.telefone}
+                    type="text"
+                    name="telefoneDDD"
+                    value={formData.telefoneDDD}
+                    onChange={handleChange}
+                    required
+                    maxLength={2}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                    placeholder="00"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Número *</label>
+                  <input
+                    type="text"
+                    name="telefoneNumero"
+                    value={formData.telefoneNumero}
                     onChange={handleChange}
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-                    placeholder="(00) 00000-0000"
+                    placeholder="00000-0000"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Telefone *</label>
+                  <select
+                    name="tipoTelefone"
+                    value={formData.tipoTelefone}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                    required
+                  >
+                    <option value="celular">Celular</option>
+                    <option value="fixo">Fixo</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">E-mail *</label>
@@ -137,13 +180,68 @@ const MedicoForm = () => {
                     placeholder="email@exemplo.com"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Contato Preferencial</label>
+                  <select
+                    name="contatoPreferencial"
+                    value={formData.contatoPreferencial}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                  >
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="ligacao">Ligação</option>
+                    <option value="email">E-mail</option>
+                    <option value="sms">SMS</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Status e Datas */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Status *</label>
+                <select
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                  required
+                >
+                  <option value="ativo">Ativo</option>
+                  <option value="inativo">Inativo</option>
+                  <option value="ferias">Férias</option>
+                  <option value="afastado">Afastado</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Data de Cadastro</label>
+                <input
+                  type="date"
+                  name="dataCadastro"
+                  value={formData.dataCadastro}
+                  onChange={handleChange}
+                  disabled
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Última Atualização</label>
+                <input
+                  type="date"
+                  name="ultimaAtualizacao"
+                  value={formData.ultimaAtualizacao}
+                  onChange={handleChange}
+                  disabled
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
+                />
               </div>
             </div>
 
             {/* Horário de Atendimento */}
             <div>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span className="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                <span className="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
                 Horário de Atendimento
               </h2>
               <div className="grid grid-cols-1 gap-4">

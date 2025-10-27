@@ -9,6 +9,8 @@ const ConsultaForm = () => {
     data: '',
     horario: '',
     tipo: '',
+    status: 'agendada',
+    linkTeleconsulta: 'https://meet.heraclinicadigital.com.br/consulta-' + Math.random().toString(36).substring(2, 10),
     observacoes: '',
   });
 
@@ -116,13 +118,13 @@ const ConsultaForm = () => {
               </div>
             </div>
 
-            {/* Tipo de Consulta */}
+            {/* Tipo de Consulta e Status */}
             <div>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="bg-purple-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
-                Tipo de Consulta
+                Tipo e Status
               </h2>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Tipo *</label>
                   <select
@@ -139,7 +141,50 @@ const ConsultaForm = () => {
                     <option value="Teleconsulta">Teleconsulta</option>
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Status *</label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                  >
+                    <option value="agendada">Agendada</option>
+                    <option value="confirmada">Confirmada</option>
+                    <option value="em_andamento">Em andamento</option>
+                    <option value="concluida">Concluída</option>
+                    <option value="cancelada">Cancelada</option>
+                    <option value="remarcada">Remarcada</option>
+                  </select>
+                </div>
               </div>
+              {formData.tipo === 'Teleconsulta' && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Link da Teleconsulta</label>
+                  <div className="flex">
+                    <input
+                      type="text"
+                      name="linkTeleconsulta"
+                      value={formData.linkTeleconsulta}
+                      onChange={handleChange}
+                      readOnly
+                      className="flex-1 p-3 border border-gray-300 rounded-l-lg bg-gray-50 text-gray-600"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(formData.linkTeleconsulta);
+                        alert('Link copiado para a área de transferência!');
+                      }}
+                      className="px-4 bg-purple-100 text-purple-700 rounded-r-lg hover:bg-purple-200 transition"
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                  <p className="mt-1 text-sm text-gray-500">Compartilhe este link com o paciente para acessar a consulta</p>
+                </div>
+              )}
             </div>
 
             {/* Observações */}
