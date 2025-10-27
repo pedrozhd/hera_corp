@@ -15,6 +15,9 @@ import Member from './components/members'
 import FaqAnswer from './components/faqanswer'
 import LoginPage from './pages/LoginPage'
 import Dashboard from './pages/dashboard'
+import PacienteForm from './pages/pacienteform'
+import MedicoForm from './pages/medicoform'
+import ConsultaForm from './pages/consultaform'
 
 function App() {
   return (
@@ -42,6 +45,9 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/paciente/cadastrar" element={<PacienteForm />} />
+        <Route path="/medico/cadastrar" element={<MedicoForm />} />
+        <Route path="/consulta/cadastrar" element={<ConsultaForm />} />
       </Routes>
       <Footer />
     </BrowserRouter>

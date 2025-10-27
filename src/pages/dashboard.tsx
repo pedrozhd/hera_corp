@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([
     { id: 1, text: 'Agendar consulta para o Marcos Aurélio', completed: true },
     { id: 2, text: 'Mandar guia para Fernanda Campos', completed: true },
@@ -114,7 +116,8 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               ),
-              gradient: 'from-blue-500 to-blue-700'
+              gradient: 'from-blue-500 to-blue-700',
+              route: '/paciente'
             },
             { 
               title: 'Médico', 
@@ -123,7 +126,8 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               ),
-              gradient: 'from-indigo-500 to-indigo-700'
+              gradient: 'from-indigo-500 to-indigo-700',
+              route: '/medico'
             },
             { 
               title: 'Consulta', 
@@ -132,37 +136,53 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               ),
-              gradient: 'from-purple-500 to-purple-700'
+              gradient: 'from-purple-500 to-purple-700',
+              route: '/consulta'
             },
-          ].map((card, index) => (
-            <div key={index} className={`bg-gradient-to-br ${card.gradient} rounded-2xl shadow-xl p-6 text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl`}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-                  {card.icon}
-                </div>
-                <h3 className="text-2xl font-bold">{card.title}</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-white/90">Operação</label>
-                  <select className="w-full p-3 rounded-xl text-gray-800 font-medium focus:ring-4 focus:ring-white/30 focus:outline-none bg-white shadow-md transition">
-                    <option value="create">📝 Cadastrar</option>
-                    <option value="read">👁️ Visualizar</option>
-                    <option value="update">✏️ Editar</option>
-                    <option value="delete">🗑️ Excluir</option>
-                  </select>
+          ].map((card, index) => {
+            const [selectedOperation, setSelectedOperation] = useState('create');
+            
+            const handleConfirm = () => {
+              navigate(`${card.route}/${selectedOperation === 'create' ? 'cadastrar' : selectedOperation}`);
+            };
+
+            return (
+              <div key={index} className={`bg-gradient-to-br ${card.gradient} rounded-2xl shadow-xl p-6 text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl`}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                    {card.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold">{card.title}</h3>
                 </div>
                 
-                <button className="w-full bg-white text-gray-800 py-3 px-4 rounded-xl font-bold hover:bg-gray-50 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group">
-                  <span>Confirmar</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </button>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-white/90">Operação</label>
+                    <select 
+                      value={selectedOperation}
+                      onChange={(e) => setSelectedOperation(e.target.value)}
+                      className="w-full p-3 rounded-xl text-gray-800 font-medium focus:ring-4 focus:ring-white/30 focus:outline-none bg-white shadow-md transition"
+                    >
+                      <option value="create">📝 Cadastrar</option>
+                      <option value="read">👁️ Visualizar</option>
+                      <option value="update">✏️ Editar</option>
+                      <option value="delete">🗑️ Excluir</option>
+                    </select>
+                  </div>
+                  
+                  <button 
+                    onClick={handleConfirm}
+                    className="w-full bg-white text-gray-800 py-3 px-4 rounded-xl font-bold hover:bg-gray-50 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group"
+                  >
+                    <span>Confirmar</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </main>
     </div>
