@@ -1,33 +1,58 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginUser, registerUser } from "../services/authService";
 
-const LoginPage = () => {
+export default function LoginPage() {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: ''
+    nome: "",
+    email: "",
+    senha: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [e.target.name]: e.target.value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    // Lógica de autenticação aqui
-    console.log('Formulário enviado:', formData);
+    setErro("");
+    setLoading(true);
+
+    try {
+      if (isLogin) {
+        await loginUser(formData.email, formData.senha);
+      } else {
+        await registerUser({
+          nome: formData.nome,
+          email: formData.email,
+          senha: formData.senha,
+        });
+        navigate("/dashboard", { replace: true });
+      }
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : "Erro inesperado");
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          {isLogin ? 'Faça login na sua conta' : 'Crie uma nova conta'}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          {isLogin ? "Entrar na sua conta" : "Criar nova conta"}
         </h2>
+        <p className="mt-2 text-sm text-gray-600">
+          {isLogin
+            ? "Bem-vindo de volta! Faça login para continuar."
+            : "Preencha os dados abaixo para se cadastrar."}
+        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -35,16 +60,19 @@ const LoginPage = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             {!isLogin && (
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="nome"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Nome completo
                 </label>
                 <div className="mt-1">
                   <input
-                    id="name"
-                    name="name"
+                    id="nome"
+                    name="nome"
                     type="text"
                     required
-                    value={formData.name}
+                    value={formData.nome}
                     onChange={handleChange}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
@@ -53,7 +81,10 @@ const LoginPage = () => {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email
               </label>
               <div className="mt-1">
@@ -61,7 +92,6 @@ const LoginPage = () => {
                   id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
                   required
                   value={formData.email}
                   onChange={handleChange}
@@ -71,17 +101,19 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="senha"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Senha
               </label>
               <div className="mt-1">
                 <input
-                  id="password"
-                  name="password"
+                  id="senha"
+                  name="senha"
                   type="password"
-                  autoComplete={isLogin ? 'current-password' : 'new-password'}
                   required
-                  value={formData.password}
+                  value={formData.senha}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
@@ -91,12 +123,27 @@ const LoginPage = () => {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
               >
-                {isLogin ? 'Entrar' : 'Cadastrar'}
+                {loading
+                  ? isLogin
+                    ? "Entrando..."
+                    : "Cadastrando..."
+                  : isLogin
+                  ? "Entrar"
+                  : "Cadastrar"}
               </button>
             </div>
           </form>
+
+          {erro && (
+            <p className="text-red-500 text-sm text-center mt-4">{erro}</p>
+          )}
 
           <div className="mt-6">
             <div className="relative">
@@ -105,7 +152,7 @@ const LoginPage = () => {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-500">
-                  {isLogin ? 'Novo por aqui?' : 'Já tem uma conta?'}
+                  {isLogin ? "Novo por aqui?" : "Já tem uma conta?"}
                 </span>
               </div>
             </div>
@@ -113,10 +160,13 @@ const LoginPage = () => {
             <div className="mt-6">
               <button
                 type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setErro("");
+                }}
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition"
               >
-                {isLogin ? 'Criar uma nova conta' : 'Fazer login'}
+                {isLogin ? "Criar nova conta" : "Fazer login"}
               </button>
             </div>
           </div>
@@ -124,6 +174,4 @@ const LoginPage = () => {
       </div>
     </div>
   );
-};
-
-export default LoginPage;
+}

@@ -5,7 +5,7 @@ import AboutProject from './components/aboutproject'
 import Members from './components/members'  
 import Faq from './components/faq'
 import Contact from './components/contact'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Solution from './pages/solution'
 import BetaSolution from './pages/betasolution'
 import FaqPage from './pages/faqpage'
@@ -18,6 +18,7 @@ import Dashboard from './pages/dashboard'
 import PacienteForm from './pages/pacienteform'
 import MedicoForm from './pages/medicoform'
 import ConsultaForm from './pages/consultaform'
+import PrivateRoute from './components/PrivateRoute'
 
 function App() {
   return (
@@ -44,8 +45,11 @@ function App() {
         <Route path="/faqpage" element={<FaqPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
         <Route path="/paciente/cadastrar" element={<PacienteForm />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/medico/cadastrar" element={<MedicoForm />} />
         <Route path="/consulta/cadastrar" element={<ConsultaForm />} />
       </Routes>
