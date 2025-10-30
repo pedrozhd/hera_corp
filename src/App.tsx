@@ -19,6 +19,8 @@ import PacienteForm from './pages/pacienteform'
 import MedicoForm from './pages/medicoform'
 import ConsultaForm from './pages/consultaform'
 import PrivateRoute from './components/PrivateRoute'
+import AtualizarPacienteForm from './pages/atualizarpacienteform'
+import AtualizarMedicoForm from './pages/atualizarmedicoform'
 
 function App() {
   return (
@@ -52,6 +54,8 @@ function App() {
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/medico/cadastrar" element={<MedicoForm />} />
         <Route path="/consulta/cadastrar" element={<ConsultaForm />} />
+        <Route path="/paciente/atualizar/:id" element={<AtualizarPacienteForm />} />
+        <Route path="/medico/atualizar/:id" element={<AtualizarMedicoForm />} />
       </Routes>
       <Footer />
     </BrowserRouter>
