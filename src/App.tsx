@@ -21,6 +21,7 @@ import ConsultaForm from './pages/consultaform'
 import PrivateRoute from './components/PrivateRoute'
 import AtualizarPacienteForm from './pages/atualizarpacienteform'
 import AtualizarMedicoForm from './pages/atualizarmedicoform'
+import AtualizarConsultaForm from './pages/atualizarconsulta'
 
 function App() {
   return (
@@ -40,22 +41,30 @@ function App() {
             </>
           }
         />
-        <Route path="/faq/:slug" element={<FaqAnswer />} />
-        <Route path="/members/:id" element={<Member />} />
-        <Route path="/solution" element={<Solution />} />
-        <Route path="/betasolution" element={<BetaSolution />} />
-        <Route path="/faqpage" element={<FaqPage />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Route>
-        <Route path="/paciente/cadastrar" element={<PacienteForm />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-        <Route path="/medico/cadastrar" element={<MedicoForm />} />
-        <Route path="/consulta/cadastrar" element={<ConsultaForm />} />
-        <Route path="/paciente/atualizar/:id" element={<AtualizarPacienteForm />} />
-        <Route path="/medico/atualizar/:id" element={<AtualizarMedicoForm />} />
+      <Route path="/login" element={<LoginPage />} />
+
+      {/* Rotas Públicas */}
+      <Route path="/" element={<Principal />} />
+      <Route path="/solution" element={<Solution />} />
+      <Route path="/betasolution" element={<BetaSolution />} />
+      <Route path="/faqpage" element={<FaqPage />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/faq/:slug" element={<FaqAnswer />} />
+      <Route path="/members/:id" element={<Member />} />
+
+      {/* Rotas Protegidas */}
+      <Route element={<PrivateRoute />}>
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/paciente/cadastrar" element={<PacienteForm />} />
+      <Route path="/medico/cadastrar" element={<MedicoForm />} />
+      <Route path="/consulta/cadastrar" element={<ConsultaForm />} />
+      <Route path="/paciente/atualizar/:id" element={<AtualizarPacienteForm />} />
+      <Route path="/medico/atualizar/:id" element={<AtualizarMedicoForm />} />
+      <Route path="/consulta/atualizar/:id" element={<AtualizarConsultaForm />} />
+      </Route>
+
+      {/* Rota de fallback - Redireciona para login se não encontrar a rota */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
       <Footer />
     </BrowserRouter>
