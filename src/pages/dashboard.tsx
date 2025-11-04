@@ -143,7 +143,22 @@ const Dashboard = () => {
             const [selectedOperation, setSelectedOperation] = useState('create');
             
             const handleConfirm = () => {
-              navigate(`${card.route}/${selectedOperation === 'create' ? 'cadastrar' : selectedOperation}`);
+                if (selectedOperation === 'update') {
+                const id = prompt(`Digite o ID do(a) ${card.title} que deseja editar:`);
+                if (id) {
+                  navigate(`${card.route}/atualizar/${id}`);
+                }
+              } else if (selectedOperation === 'create') {
+                navigate(`${card.route}/cadastrar`);
+              } else if (selectedOperation === 'read') {
+                navigate(card.route); // Isso vai para a lista
+              } else if (selectedOperation === 'delete') {
+                const id = prompt(`Digite o ID do(a) ${card.title} que deseja excluir:`);
+                if (id) {
+                  // Aqui você pode adicionar a lógica para excluir
+                  console.log(`Excluir ${card.title} com ID:`, id);
+                }
+              }
             };
 
             return (
