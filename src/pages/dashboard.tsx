@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -10,6 +10,27 @@ const Dashboard = () => {
     { id: 4, text: 'Reagendar consulta do Lucas Alves', completed: false },
   ]);
 
+  const [userName, setUserName] = useState<string>('Usuário');
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("auth_user");
+    if (!storedUser) return;
+
+    try {
+      const parsedUser = JSON.parse(storedUser);
+      const userId = parsedUser.id_usuario || parsedUser.id;
+
+      if (userId) {
+        fetch(`https://hera-api.onrender.com/hera-api/usuarios/${userId}`)
+          .then((res) => res.ok ? res.json() : Promise.reject(res))
+          .then((data) => setUserName(data.nome || "Usuário"))
+          .catch(() => setUserName("Usuário"));
+      }
+    } catch {
+      setUserName("Usuário");
+    }
+  }, []);
+
   const toggleTask = (id: number) => {
     setTasks(tasks.map(task => 
       task.id === id ? { ...task, completed: !task.completed } : task
@@ -19,6 +40,13 @@ const Dashboard = () => {
   const completedTasks = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
 
+  const getSaudacao = () => {
+    const hora = new Date().getHours();
+    if (hora < 12) return "Bom dia";
+    if (hora < 18) return "Boa tarde";
+    return "Boa noite";
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       <main className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -26,7 +54,7 @@ const Dashboard = () => {
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Bom dia, Pedro!</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{getSaudacao()}, {userName}!</h2>
               <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold cursor-pointer hover:bg-blue-600 transition">
                 ?
               </div>

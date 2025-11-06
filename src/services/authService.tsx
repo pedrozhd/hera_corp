@@ -4,6 +4,7 @@ const REGISTER_ENDPOINT = `${API_BASE_URL}/hera-api/usuarios`;
 const AUTH_USER_STORAGE_KEY = 'auth_user';
 
 export type AuthUser = {
+  id?: number;
   nome?: string;
   email: string;
   senha: string;
