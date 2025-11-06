@@ -18,7 +18,7 @@ const Dashboard = () => {
 
     try {
       const parsedUser = JSON.parse(storedUser);
-      const userId = parsedUser.id_usuario || parsedUser.id;
+      const userId = parsedUser.idUsuario || parsedUser.id;
 
       if (userId) {
         fetch(`https://hera-api.onrender.com/hera-api/usuarios/${userId}`)
