@@ -20,7 +20,7 @@ export default function LoginPage() {
     }));
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro("");
     setLoading(true);
@@ -28,16 +28,23 @@ export default function LoginPage() {
     try {
       if (isLogin) {
         await loginUser(formData.email, formData.senha);
+        navigate("/dashboard", { replace: true });
       } else {
         await registerUser({
           nome: formData.nome,
           email: formData.email,
           senha: formData.senha,
         });
-        navigate("/dashboard", { replace: true });
+
+        setFormData({ nome: "", email: "", senha: "" });
+
+        alert("Cadastro realizado com sucesso! Faça login para continuar.");
+
+        setIsLogin(true);
       }
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Erro inesperado");
+    } finally {
       setLoading(false);
     }
   };
