@@ -1,75 +1,140 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const PacienteForm = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    // Dados Pessoais
     nome: '',
-    cpf: '',
-    dataNascimento: '',
-    sexo: '',
-    status: 'ativo',
-    dataCadastro: new Date().toISOString().split('T')[0],
-    ultimaAtualizacao: new Date().toISOString().split('T')[0],
-    
-    // Contato
-    telefoneDDD: '',
-    telefoneNumero: '',
-    tipoTelefone: 'celular',
     email: '',
-    contatoPreferencial: 'whatsapp',
-    
-    // Endereço
-    endereco: '',
-    complemento: '',
-    bairro: '',
-    estado: '',
-    cep: '',
-    
-    // Dados adicionais
+    sexo: '',
+    dataNascimento: '',
+    status: 'ativo',
     consultasRestantes: 0,
     faltas: 0,
     possuiDeficiencia: false,
     tipoDeficiencia: '',
     videoEnviado: false,
-    
-    // Acompanhante
+    preferenciaContato: 'whatsapp',
+    dataCadastro: new Date().toLocaleDateString('en-CA'),
+    ultimaAtualizacao: new Date().toLocaleDateString('en-CA'),
+
+    telefone: { ddd: '', numero: '', tipoDeTelefone: 'celular' },
+    endereco: { cep: '', logradouro: '', complemento: '', bairro: '', estado: '' },
     acompanhante: {
       nome: '',
-      ddd: '',
-      telefone: '',
-      grauParentesco: '',
       email: '',
-      dataCadastro: new Date().toISOString().split('T')[0]
+      parentesco: '',
+      dataCadastro: new Date().toLocaleDateString('en-CA'),
+      telefone: { ddd: '', numero: '', tipoDeTelefone: 'CELULAR' }
     }
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-    
-    if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else if (name.startsWith('acompanhante.')) {
-      const field = name.split('.')[1];
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement;
+
+    if (name.includes('.')) {
+      const [parent, child, subChild] = name.split('.');
+
+      setFormData(prev => {
+        const prevAny = prev as any;
+        if (subChild) {
+          // Ex: acompanhante.telefone.ddd
+          return {
+            ...prev,
+            [parent]: {
+              ...prevAny[parent],
+              [child]: {
+                ...prevAny[parent][child],
+                [subChild]: value
+              }
+            }
+          };
+        } else {
+          // Ex: telefone.ddd ou endereco.cep
+          return {
+            ...prev,
+            [parent]: {
+              ...prevAny[parent],
+              [child]: type === 'checkbox' ? checked : value
+            }
+          };
+        }
+      });
+    } else {
       setFormData(prev => ({
         ...prev,
-        acompanhante: {
-          ...prev.acompanhante,
-          [field]: value
-        }
+        [name]: type === 'checkbox' ? checked : value
       }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Dados do paciente:', formData);
-    alert('Paciente cadastrado com sucesso!');
-    navigate('/dashboard');
+
+    // Converter datas para formato ISO completo
+    const agora = new Date().toISOString().split('.')[0]; // remove milissegundos
+
+    const payload = {
+      nome: formData.nome,
+      email: formData.email,
+      sexo: formData.sexo === 'masculino' ? 'M' : formData.sexo === 'feminino' ? 'F' : 'O',
+      status: formData.status.toUpperCase(),
+      consultasRestantes: Number(formData.consultasRestantes) || 0,
+      faltas: Number(formData.faltas) || 0,
+      possuiDeficiencia: formData.possuiDeficiencia || false,
+      tipoDeficiencia: formData.tipoDeficiencia || null,
+      videoEnviado: formData.videoEnviado || false,
+      dataNascimento: formData.dataNascimento,
+      preferenciaContato: 
+        formData.preferenciaContato === 'whatsapp'
+          ? 'WhatsApp'
+          : formData.preferenciaContato === 'ligacao'
+          ? 'Ligacao'
+          : formData.preferenciaContato === 'email'
+          ? 'Email'
+          : 'SMS',
+      dataCadastro: agora,
+      ultimaAtualizacao: agora,
+
+      telefone: {
+        ddd: formData.telefone.ddd,
+        numero: formData.telefone.numero,
+        tipoDeTelefone: formData.telefone.tipoDeTelefone.toUpperCase(),
+      },
+
+      endereco: {
+        cep: formData.endereco.cep,
+        logradouro: formData.endereco.logradouro,
+        complemento: formData.endereco.complemento,
+        bairro: formData.endereco.bairro,
+        estado: formData.endereco.estado,
+      },
+
+      acompanhante: {
+        nome: formData.acompanhante.nome,
+        email: formData.acompanhante.email,
+        parentesco: formData.acompanhante.parentesco,
+        telefone: {
+          ddd: formData.acompanhante.telefone.ddd,
+          numero: formData.acompanhante.telefone.numero,
+          tipoDeTelefone: (formData.acompanhante.telefone.tipoDeTelefone || 'CELULAR').toUpperCase(),
+        },
+        dataCadastro: agora,
+      },
+    };
+
+    try {
+      const response = await api.pacientes.criar(payload);
+      console.log('✅ Paciente cadastrado com sucesso:', response);
+      alert('Paciente cadastrado com sucesso!');
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('❌ Erro ao cadastrar paciente:', error);
+      alert('Erro ao cadastrar paciente. Veja o console para detalhes.');
+    }
   };
 
   return (
@@ -102,11 +167,12 @@ const PacienteForm = () => {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Dados Pessoais */}
-            <div>
+            <section>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
                 Dados Pessoais
               </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nome Completo *</label>
@@ -118,18 +184,6 @@ const PacienteForm = () => {
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                     placeholder="Digite o nome completo"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">CPF *</label>
-                  <input
-                    type="text"
-                    name="cpf"
-                    value={formData.cpf}
-                    onChange={handleChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="000.000.000-00"
                   />
                 </div>
                 <div>
@@ -160,336 +214,151 @@ const PacienteForm = () => {
                   </select>
                 </div>
               </div>
-            </div>
+            </section>
 
             {/* Contato */}
-            <div>
+            <section>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
                 Contato
               </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">DDD *</label>
-                  <input
-                    type="text"
-                    name="telefoneDDD"
-                    value={formData.telefoneDDD}
-                    onChange={handleChange}
-                    required
-                    maxLength={2}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Número *</label>
-                  <input
-                    type="text"
-                    name="telefoneNumero"
-                    value={formData.telefoneNumero}
-                    onChange={handleChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="00000-0000"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Telefone *</label>
-                  <select
-                    name="tipoTelefone"
-                    value={formData.tipoTelefone}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    required
-                  >
-                    <option value="celular">Celular</option>
-                    <option value="fixo">Fixo</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">E-mail *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="email@exemplo.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Contato Preferencial</label>
-                  <select
-                    name="contatoPreferencial"
-                    value={formData.contatoPreferencial}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  >
-                    <option value="whatsapp">WhatsApp</option>
-                    <option value="ligacao">Ligação</option>
-                    <option value="email">E-mail</option>
-                    <option value="sms">SMS</option>
-                  </select>
-                </div>
+                <input
+                  type="text"
+                  name="telefone.ddd"
+                  value={formData.telefone.ddd}
+                  onChange={handleChange}
+                  placeholder="DDD"
+                  required
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="text"
+                  name="telefone.numero"
+                  value={formData.telefone.numero}
+                  onChange={handleChange}
+                  placeholder="Número"
+                  required
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <select
+                  name="telefone.tipoDeTelefone"
+                  value={formData.telefone.tipoDeTelefone}
+                  onChange={handleChange}
+                  required
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                >
+                  <option value="celular">Celular</option>
+                  <option value="fixo">Fixo</option>
+                </select>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="email@exemplo.com"
+                  required
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
               </div>
-            </div>
+            </section>
 
             {/* Endereço */}
-            <div>
+            <section>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
                 Endereço
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Endereço Completo</label>
-                  <input
-                    type="text"
-                    name="endereco"
-                    value={formData.endereco}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="Rua, número"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Complemento</label>
-                  <input
-                    type="text"
-                    name="complemento"
-                    value={formData.complemento}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="Apartamento, bloco, etc."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bairro *</label>
-                  <input
-                    type="text"
-                    name="bairro"
-                    value={formData.bairro}
-                    onChange={handleChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="Bairro"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Estado</label>
-                  <select
-                    name="estado"
-                    value={formData.estado}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  >
-                    <option value="">Selecione</option>
-                    <option value="SP">São Paulo</option>
-                    <option value="RJ">Rio de Janeiro</option>
-                    <option value="MG">Minas Gerais</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">CEP</label>
-                  <input
-                    type="text"
-                    name="cep"
-                    value={formData.cep}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="00000-000"
-                  />
-                </div>
-              </div>
-            </div>
 
-            {/* Dados Adicionais */}
-            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="endereco.logradouro"
+                  value={formData.endereco.logradouro}
+                  onChange={handleChange}
+                  placeholder="Rua, número"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="text"
+                  name="endereco.bairro"
+                  value={formData.endereco.bairro}
+                  onChange={handleChange}
+                  placeholder="Bairro"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="text"
+                  name="endereco.complemento"
+                  value={formData.endereco.complemento}
+                  onChange={handleChange}
+                  placeholder="Complemento"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="text"
+                  name="endereco.cep"
+                  value={formData.endereco.cep}
+                  onChange={handleChange}
+                  placeholder="CEP"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+              </div>
+            </section>
+
+            {/* Acompanhante */}
+            <section>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
-                Dados Adicionais
+                Acompanhante
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status *</label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    required
-                  >
-                    <option value="ativo">Ativo</option>
-                    <option value="inativo">Inativo</option>
-                    <option value="em_espera">Em espera</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Consultas Restantes</label>
-                  <input
-                    type="number"
-                    name="consultasRestantes"
-                    value={formData.consultasRestantes}
-                    onChange={handleChange}
-                    min="0"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Faltas</label>
-                  <input
-                    type="number"
-                    name="faltas"
-                    value={formData.faltas}
-                    onChange={handleChange}
-                    min="0"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="possuiDeficiencia"
-                    name="possuiDeficiencia"
-                    checked={formData.possuiDeficiencia}
-                    onChange={handleChange}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="possuiDeficiencia" className="ml-2 block text-sm text-gray-700">
-                    Possui Deficiência
-                  </label>
-                </div>
-                {formData.possuiDeficiencia && (
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Deficiência</label>
-                    <input
-                      type="text"
-                      name="tipoDeficiencia"
-                      value={formData.tipoDeficiencia}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                      placeholder="Especifique o tipo de deficiência"
-                    />
-                  </div>
-                )}
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="videoEnviado"
-                    name="videoEnviado"
-                    checked={formData.videoEnviado}
-                    onChange={handleChange}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="videoEnviado" className="ml-2 block text-sm text-gray-700">
-                    Vídeo Enviado
-                  </label>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Data de Cadastro</label>
-                  <input
-                    type="date"
-                    name="dataCadastro"
-                    value={formData.dataCadastro}
-                    onChange={handleChange}
-                    disabled
-                    className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Última Atualização</label>
-                  <input
-                    type="date"
-                    name="ultimaAtualizacao"
-                    value={formData.ultimaAtualizacao}
-                    onChange={handleChange}
-                    disabled
-                    className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
-                  />
-                </div>
-              </div>
-            </div>
 
-            {/* Dados do Acompanhante */}
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">5</span>
-                Dados do Acompanhante
-              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nome do Acompanhante</label>
-                  <input
-                    type="text"
-                    name="acompanhante.nome"
-                    value={formData.acompanhante.nome}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="Nome completo do acompanhante"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">DDD</label>
-                  <input
-                    type="text"
-                    name="acompanhante.ddd"
-                    value={formData.acompanhante.ddd}
-                    onChange={handleChange}
-                    maxLength={2}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
-                  <input
-                    type="text"
-                    name="acompanhante.telefone"
-                    value={formData.acompanhante.telefone}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="00000-0000"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Grau de Parentesco</label>
-                  <input
-                    type="text"
-                    name="acompanhante.grauParentesco"
-                    value={formData.acompanhante.grauParentesco}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="Ex: Pai, Mãe, Filho(a), etc."
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">E-mail do Acompanhante</label>
-                  <input
-                    type="email"
-                    name="acompanhante.email"
-                    value={formData.acompanhante.email}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="email@exemplo.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Data de Cadastro</label>
-                  <input
-                    type="date"
-                    name="acompanhante.dataCadastro"
-                    value={formData.acompanhante.dataCadastro}
-                    onChange={handleChange}
-                    disabled
-                    className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="acompanhante.nome"
+                  value={formData.acompanhante.nome}
+                  onChange={handleChange}
+                  placeholder="Nome completo"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="email"
+                  name="acompanhante.email"
+                  value={formData.acompanhante.email}
+                  onChange={handleChange}
+                  placeholder="email@exemplo.com"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="text"
+                  name="acompanhante.telefone.ddd"
+                  value={formData.acompanhante.telefone.ddd}
+                  onChange={handleChange}
+                  placeholder="DDD"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="text"
+                  name="acompanhante.telefone.numero"
+                  value={formData.acompanhante.telefone.numero}
+                  onChange={handleChange}
+                  placeholder="Número"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="text"
+                  name="acompanhante.parentesco"
+                  value={formData.acompanhante.parentesco}
+                  onChange={handleChange}
+                  placeholder="Parentesco"
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
               </div>
-            </div>
+            </section>
 
-            {/* Buttons */}
+            {/* Botões */}
             <div className="flex gap-4 pt-6 border-t">
               <button
                 type="button"
@@ -500,9 +369,10 @@ const PacienteForm = () => {
               </button>
               <button
                 type="submit"
+                disabled={loading}
                 className="flex-1 py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-blue-800 transition shadow-lg hover:shadow-xl"
               >
-                Salvar Paciente
+                {loading ? 'Salvando...' : 'Salvar Paciente'}
               </button>
             </div>
           </form>

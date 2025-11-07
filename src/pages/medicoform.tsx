@@ -1,44 +1,100 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 const MedicoForm = () => {
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    // Dados Pessoais
-    nome: '',
-    crm: '',
-    especialidade: '',
-    status: 'ativo',
-    dataCadastro: new Date().toISOString().split('T')[0],
-    ultimaAtualizacao: new Date().toISOString().split('T')[0],
-    
-    // Contato
-    telefoneDDD: '',
-    telefoneNumero: '',
-    tipoTelefone: 'celular',
-    email: '',
-    contatoPreferencial: 'whatsapp',
-    
-    // Horário
-    horarioAtendimento: '',
+    nome: "",
+    crm: "",
+    especialidade: "",
+    status: "ativo",
+    dataCadastro: new Date().toISOString().split("T")[0],
+    ultimaAtualizacao: new Date().toISOString().split("T")[0],
+    telefoneDDD: "",
+    telefoneNumero: "",
+    tipoTelefone: "celular",
+    email: "",
+    contatoPreferencial: "whatsapp",
+    horarioAtendimento: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  // Manipulador de mudança de inputs
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target as HTMLInputElement;
-    
-    if (type === 'checkbox') {
+
+    if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({ ...prev, [name]: checked }));
+      setFormData((prev) => ({ ...prev, [name]: checked }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Envio do formulário
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Dados do médico:', formData);
-    alert('Médico cadastrado com sucesso!');
-    navigate('/dashboard');
+    setErro("");
+    setLoading(true);
+
+    try {
+      if (!formData.nome || !formData.crm || !formData.email) {
+        alert("Preencha todos os campos obrigatórios!");
+        setLoading(false);
+        return;
+      }
+
+      // ✅ Monta payload conforme backend espera
+      const payload = {
+        nome: formData.nome,
+        crm: formData.crm,
+        especialidade: formData.especialidade,
+        email: formData.email,
+        status: formData.status,
+        telefone: {
+          ddd: formData.telefoneDDD,
+          numero: formData.telefoneNumero,
+          tipoDeTelefone: formData.tipoTelefone,
+        },
+        contatoPreferencial: formData.contatoPreferencial,
+        horarioAtendimento: formData.horarioAtendimento,
+      };
+
+      // ✅ Chamada à API
+      await api.medicos.criar(payload);
+
+      alert("Médico cadastrado com sucesso!");
+
+      // ✅ Reseta o formulário
+      setFormData({
+        nome: "",
+        crm: "",
+        especialidade: "",
+        status: "ativo",
+        dataCadastro: new Date().toISOString().split("T")[0],
+        ultimaAtualizacao: new Date().toISOString().split("T")[0],
+        telefoneDDD: "",
+        telefoneNumero: "",
+        tipoTelefone: "celular",
+        email: "",
+        contatoPreferencial: "whatsapp",
+        horarioAtendimento: "",
+      });
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Erro ao cadastrar médico:", err);
+      const msg = err instanceof Error ? err.message : "Erro ao cadastrar médico.";
+      setErro(msg);
+      alert(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,37 +104,65 @@ const MedicoForm = () => {
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate("/dashboard")}
               className="p-2 hover:bg-gray-100 rounded-lg transition"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
               </svg>
             </button>
             <div className="flex items-center gap-3">
               <div className="bg-indigo-100 p-3 rounded-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-indigo-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-800">Cadastro de Médico</h1>
+                <h1 className="text-3xl font-bold text-gray-800">
+                  Cadastro de Médico
+                </h1>
                 <p className="text-gray-600">Preencha os dados do médico</p>
               </div>
             </div>
           </div>
 
-          {/* Form */}
+          {/* Formulário */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Dados Profissionais */}
             <div>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span className="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                <span className="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                  1
+                </span>
                 Dados Profissionais
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nome Completo *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nome Completo *
+                  </label>
                   <input
                     type="text"
                     name="nome"
@@ -90,7 +174,9 @@ const MedicoForm = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">CRM *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    CRM *
+                  </label>
                   <input
                     type="text"
                     name="crm"
@@ -102,7 +188,9 @@ const MedicoForm = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Especialidade *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Especialidade *
+                  </label>
                   <select
                     name="especialidade"
                     value={formData.especialidade}
@@ -126,12 +214,16 @@ const MedicoForm = () => {
             {/* Contato */}
             <div>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span className="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                <span className="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                  2
+                </span>
                 Contato
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">DDD *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    DDD *
+                  </label>
                   <input
                     type="text"
                     name="telefoneDDD"
@@ -144,7 +236,9 @@ const MedicoForm = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Número *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Número *
+                  </label>
                   <input
                     type="text"
                     name="telefoneNumero"
@@ -156,7 +250,9 @@ const MedicoForm = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Telefone *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tipo de Telefone *
+                  </label>
                   <select
                     name="tipoTelefone"
                     value={formData.tipoTelefone}
@@ -169,7 +265,9 @@ const MedicoForm = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">E-mail *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    E-mail *
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -181,7 +279,9 @@ const MedicoForm = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Contato Preferencial</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Contato Preferencial
+                  </label>
                   <select
                     name="contatoPreferencial"
                     value={formData.contatoPreferencial}
@@ -197,10 +297,12 @@ const MedicoForm = () => {
               </div>
             </div>
 
-            {/* Status e Datas */}
+            {/* Status / Datas / Horário */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Status *
+                </label>
                 <select
                   name="status"
                   value={formData.status}
@@ -215,38 +317,43 @@ const MedicoForm = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Data de Cadastro</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Data de Cadastro
+                </label>
                 <input
                   type="date"
                   name="dataCadastro"
                   value={formData.dataCadastro}
-                  onChange={handleChange}
                   disabled
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Última Atualização</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Última Atualização
+                </label>
                 <input
                   type="date"
                   name="ultimaAtualizacao"
                   value={formData.ultimaAtualizacao}
-                  onChange={handleChange}
                   disabled
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
                 />
               </div>
             </div>
 
-            {/* Horário de Atendimento */}
             <div>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span className="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
+                <span className="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                  4
+                </span>
                 Horário de Atendimento
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Horário</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Horário
+                  </label>
                   <input
                     type="text"
                     name="horarioAtendimento"
@@ -259,20 +366,21 @@ const MedicoForm = () => {
               </div>
             </div>
 
-            {/* Buttons */}
+            {/* Botões */}
             <div className="flex gap-4 pt-6 border-t">
               <button
                 type="button"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate("/dashboard")}
                 className="flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
+                disabled={loading}
                 className="flex-1 py-3 px-6 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-indigo-800 transition shadow-lg hover:shadow-xl"
               >
-                Salvar Médico
+                {loading ? "Salvando..." : "Salvar Médico"}
               </button>
             </div>
           </form>
