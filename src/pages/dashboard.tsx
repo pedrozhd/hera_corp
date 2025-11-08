@@ -183,8 +183,7 @@ const Dashboard = () => {
               } else if (selectedOperation === 'delete') {
                 const id = prompt(`Digite o ID do(a) ${card.title} que deseja excluir:`);
                 if (id) {
-                  // Aqui você pode adicionar a lógica para excluir
-                  console.log(`Excluir ${card.title} com ID:`, id);
+                  navigate(`${card.route}/excluir/${id}`);
                 }
               }
             };

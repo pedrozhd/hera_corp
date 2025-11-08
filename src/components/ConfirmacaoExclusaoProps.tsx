@@ -37,26 +37,33 @@ const ConfirmacaoExclusao = ({
               />
             </svg>
           </div>
+
           <h3 className="mt-2 text-lg font-medium text-gray-900">{titulo}</h3>
+
           <div className="mt-2">
-            <p className="text-sm text-gray-500">
-              {mensagem}
-            </p>
+            <p className="text-sm text-gray-500">{mensagem}</p>
           </div>
+
           <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+            {/* ✅ BOTÃO CORRETO DE EXCLUSÃO */}
             <button
               type="button"
-              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:col-start-2 sm:text-sm disabled:opacity-50"
-              onClick={onConfirmar}
+              onClick={() => {
+                console.log("🟢 Clique detectado no botão EXCLUIR!");
+                onConfirmar();
+              }}
               disabled={carregando}
+              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:col-start-2 sm:text-sm disabled:opacity-50"
             >
               {carregando ? 'Excluindo...' : 'Excluir'}
             </button>
+
+            {/* ✅ BOTÃO CANCELAR AGORA SÓ VOLTA */}
             <button
               type="button"
-              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-              onClick={() => navigate(rotaRetorno)}
+              onClick={() => navigate('/dashboard')}
               disabled={carregando}
+              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
             >
               Cancelar
             </button>

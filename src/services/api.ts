@@ -6,7 +6,7 @@ const api = {
   // Configuração padrão para as requisições
   async request(endpoint: string, options: RequestInit = {}) {
     const token = localStorage.getItem('auth_token');
-    
+
     const headers = {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -19,12 +19,21 @@ const api = {
         headers,
       });
 
+      // se não for ok, tenta ler o erro do servidor
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Erro na requisição');
+        throw new Error(errorData.message || `Erro ${response.status}`);
       }
 
-      return response.json();
+      // se for DELETE ou 204, não tenta fazer .json()
+      if (response.status === 204 || options.method === 'DELETE') {
+        return null;
+      }
+
+      // tenta ler o corpo JSON normalmente
+      const data = await response.json().catch(() => null);
+      return data;
+
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.includes('Failed to fetch')) {
@@ -39,31 +48,31 @@ const api = {
   // Pacientes
   pacientes: {
     listar: () => api.request('/pacientes'),
-    buscarPorId: (id: string) => api.request(`/pacientes/${id}`),
+    buscarPorId: (id: number) => api.request(`/pacientes/${id}`),
     criar: (dados: any) => api.request('/pacientes', { method: 'POST', body: JSON.stringify(dados) }),
-    atualizar: (id: string, dados: any) => 
+    atualizar: (id: number, dados: any) => 
       api.request(`/pacientes/${id}`, { method: 'PUT', body: JSON.stringify(dados) }),
-    excluir: (id: string) => api.request(`/pacientes/${id}`, { method: 'DELETE' }),
+    excluir: (id: number) => api.request(`/pacientes/${id}`, { method: 'DELETE' }),
   },
 
   // Médicos
   medicos: {
     listar: () => api.request('/medicos'),
-    buscarPorId: (id: string) => api.request(`/medicos/${id}`),
+    buscarPorId: (id: number) => api.request(`/medicos/${id}`),
     criar: (dados: any) => api.request('/medicos', { method: 'POST', body: JSON.stringify(dados) }),
-    atualizar: (id: string, dados: any) => 
+    atualizar: (id: number, dados: any) => 
       api.request(`/medicos/${id}`, { method: 'PUT', body: JSON.stringify(dados) }),
-    excluir: (id: string) => api.request(`/medicos/${id}`, { method: 'DELETE' }),
+    excluir: (id: number) => api.request(`/medicos/${id}`, { method: 'DELETE' }),
   },
 
   // Consultas
   consultas: {
     listar: () => api.request('/consultas'),
-    buscarPorId: (id: string) => api.request(`/consultas/${id}`),
+    buscarPorId: (id: number) => api.request(`/consultas/${id}`),
     criar: (dados: any) => api.request('/consultas', { method: 'POST', body: JSON.stringify(dados) }),
-    atualizar: (id: string, dados: any) => 
+    atualizar: (id: number, dados: any) => 
       api.request(`/consultas/${id}`, { method: 'PUT', body: JSON.stringify(dados) }),
-    excluir: (id: string) => api.request(`/consultas/${id}`, { method: 'DELETE' }),
+    excluir: (id: number) => api.request(`/consultas/${id}`, { method: 'DELETE' }),
   },
 };
 

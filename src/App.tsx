@@ -69,7 +69,7 @@ function App() {
       <Route path="/medico/excluir/:id" element={<ExcluirMedico />} />
       <Route path="/consulta/excluir/:id" element={<ExcluirConsulta />} />
       {/* Rota de fallback - Redireciona para login se não encontrar a rota */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
       <Footer />
     </BrowserRouter>
