@@ -19,21 +19,40 @@ const api = {
         headers,
       });
 
-      // se não for ok, tenta ler o erro do servidor
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Erro ${response.status}`);
+        // tenta ler JSON, se não for JSON, pega text()
+        let errorBody: any = null;
+        try {
+          errorBody = await response.clone().json();
+        } catch (e) {
+          try {
+            errorBody = await response.clone().text();
+          } catch (e2) {
+            errorBody = `Não foi possível ler o corpo do erro (status ${response.status})`;
+          }
+        }
+
+        // log detalhado (útil em dev)
+        console.error('API Erro ->', {
+          url: `${API_BASE_URL}${API_PREFIX}${endpoint}`,
+          options,
+          status: response.status,
+          body: errorBody,
+        });
+
+        // jogo a mensagem do servidor quando disponível
+        const msg =
+          (errorBody && (errorBody.message || errorBody.error || JSON.stringify(errorBody))) ||
+          `Erro ${response.status}`;
+        throw new Error(msg);
       }
 
-      // se for DELETE ou 204, não tenta fazer .json()
       if (response.status === 204 || options.method === 'DELETE') {
         return null;
       }
 
-      // tenta ler o corpo JSON normalmente
       const data = await response.json().catch(() => null);
       return data;
-
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.includes('Failed to fetch')) {
