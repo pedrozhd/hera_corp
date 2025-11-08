@@ -4,10 +4,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ConfirmacaoExclusao from '../components/ConfirmacaoExclusao';
 import api from '../services/api';
 import type { Consulta } from '../interfaces';
+import { useToast } from '../contexts/ToastContext';
 
 const ExcluirConsulta = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const toast = useToast();
   const [carregando, setCarregando] = useState(false);
   const [consulta, setConsulta] = useState<Partial<Consulta>>({ paciente: '', data: '' });
   const [mensagemStatus, setMensagemStatus] = useState<string | null>(null);
@@ -30,8 +32,8 @@ const ExcluirConsulta = () => {
         setConsulta(resposta);
       } catch (erro) {
         console.error('Erro ao carregar consulta:', erro);
-        alert('Não foi possível carregar as informações da consulta.');
-        navigate('/consulta');
+        toast.error('Não foi possível carregar as informações da consulta.');
+        setTimeout(() => navigate('/consulta'), 1500);
       } finally {
         setCarregando(false);
         setMensagemStatus(null);
@@ -50,7 +52,7 @@ const ExcluirConsulta = () => {
 
       const idNum = Number(id);
       if (Number.isNaN(idNum)) {
-        alert('ID da consulta inválido.');
+        toast.error('ID da consulta inválido.');
         setMensagemStatus('ID da consulta inválido.');
         return;
       }
@@ -58,11 +60,11 @@ const ExcluirConsulta = () => {
       await api.consultas.excluir(idNum);
 
       setMensagemStatus('✅ Consulta cancelada com sucesso!');
-      alert('✅ Consulta cancelada com sucesso!');
-      navigate('/consulta', { state: { mensagem: 'Consulta cancelada com sucesso!' } });
+      toast.success('Consulta cancelada com sucesso!');
+      setTimeout(() => navigate('/consulta'), 1500);
     } catch (erro) {
       console.error('❌ Erro ao cancelar consulta:', erro);
-      alert('❌ Ocorreu um erro ao tentar cancelar a consulta. Verifique o console.');
+      toast.error('Ocorreu um erro ao tentar cancelar a consulta.');
       setMensagemStatus('Erro ao cancelar consulta. Veja o console.');
     } finally {
       setCarregando(false);

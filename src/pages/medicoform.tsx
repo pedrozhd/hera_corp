@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import type { MedicoFormData } from "../interfaces";
+import { useToast } from "../contexts/ToastContext";
 
 const MedicoForm = () => {
   const [loading, setLoading] = useState(false);
   const [, setErro] = useState("");
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [formData, setFormData] = useState<MedicoFormData>({
     nome: "",
@@ -45,7 +47,7 @@ const MedicoForm = () => {
 
     try {
       if (!formData.nome || !formData.crm || !formData.email) {
-        alert("Preencha todos os campos obrigatórios!");
+        toast.warning("Preencha todos os campos obrigatórios!");
         setLoading(false);
         return;
       }
@@ -69,7 +71,7 @@ const MedicoForm = () => {
       // ✅ Chamada à API
       await api.medicos.criar(payload);
 
-      alert("Médico cadastrado com sucesso!");
+      toast.success("Médico cadastrado com sucesso!");
 
       // ✅ Reseta o formulário
       setFormData({
@@ -92,7 +94,7 @@ const MedicoForm = () => {
       console.error("Erro ao cadastrar médico:", err);
       const msg = err instanceof Error ? err.message : "Erro ao cadastrar médico.";
       setErro(msg);
-      alert(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

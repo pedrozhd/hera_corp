@@ -89,13 +89,13 @@ const ListaPacientes = () => {
 
   // === TABELA ===
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6 mt-16 sm:mt-20 md:mt-24">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Lista de Pacientes</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Lista de Pacientes</h1>
           <button
             onClick={handleCadastrar}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 sm:px-4 rounded-lg flex items-center gap-2 transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -113,13 +113,13 @@ const ListaPacientes = () => {
           </button>
         </div>
 
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          {pacientes.length === 0 ? (
-            <div className="p-6 text-center text-gray-500">
-              Nenhum paciente encontrado.
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="overflow-x-auto">
+            {pacientes.length === 0 ? (
+              <div className="p-6 text-center text-gray-500">
+                Nenhum paciente encontrado.
+              </div>
+            ) : (
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -127,7 +127,7 @@ const ListaPacientes = () => {
                       <th
                         key={header}
                         scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         {header}
                       </th>
@@ -137,18 +137,18 @@ const ListaPacientes = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {pacientes.map((p) => (
                     <tr key={p.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {p.nome}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {p.email}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {p.telefone
-                          ? `(${p.telefone.ddd}) ${p.telefone.numero} - ${p.telefone.tipoDeTelefone}`
+                          ? `(${p.telefone.ddd}) ${p.telefone.numero}`
                           : "—"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             p.status?.toUpperCase() === "ATIVO"
@@ -159,10 +159,10 @@ const ListaPacientes = () => {
                           {p.status || "—"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
                           onClick={() => p.id && handleEditar(p.id)}
-                          className="text-blue-600 hover:text-blue-900 mr-4"
+                          className="text-blue-600 hover:text-blue-900 mr-2 sm:mr-4"
                         >
                           Editar
                         </button>
@@ -177,8 +177,8 @@ const ListaPacientes = () => {
                   ))}
                 </tbody>
               </table>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

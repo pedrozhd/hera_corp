@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import type { PacienteFormData } from '../interfaces';
+import { useToast } from '../contexts/ToastContext';
 
 const PacienteForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [formData, setFormData] = useState<PacienteFormData>({
     nome: '',
@@ -131,11 +133,12 @@ const PacienteForm = () => {
     try {
       const response = await api.pacientes.criar(payload);
       console.log('✅ Paciente cadastrado com sucesso:', response);
-      alert('Paciente cadastrado com sucesso!');
-      navigate('/dashboard');
+      toast.success('Paciente cadastrado com sucesso!');
+      setTimeout(() => navigate('/dashboard'), 1000);
     } catch (error) {
-      console.error('❌ Erro ao cadastrar paciente:', error);
-      alert('Erro ao cadastrar paciente. Veja o console para detalhes.');
+      console.error('Erro ao cadastrar paciente:', error);
+      const msg = error instanceof Error ? error.message : 'Erro ao cadastrar paciente. Verifique os dados e tente novamente.';
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

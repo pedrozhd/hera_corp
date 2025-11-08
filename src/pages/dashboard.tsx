@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../services/authService";
+import { useToast } from "../contexts/ToastContext";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [tasks, setTasks] = useState([
     { id: 1, text: "Agendar consulta para o Marcos Aurélio", completed: true },
@@ -24,8 +27,10 @@ const Dashboard = () => {
       if (userId) {
         fetch(`https://hera-api.onrender.com/hera-api/usuarios/${userId}`)
           .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-          .then((data) => setUserName(data.nome || "Usuário"))
+          .then((data) => setUserName(capitalizeName(data.nome || "Usuário")))
           .catch(() => setUserName("Usuário"));
+      } else if (parsedUser.nome) {
+        setUserName(capitalizeName(parsedUser.nome));
       }
     } catch {
       setUserName("Usuário");
@@ -48,6 +53,15 @@ const Dashboard = () => {
     if (hora < 12) return "Bom dia";
     if (hora < 18) return "Boa tarde";
     return "Boa noite";
+  };
+
+  // Função para capitalizar nome (primeira letra de cada palavra em maiúscula)
+  const capitalizeName = (name: string) => {
+    return name
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
   // === CRUD CARDS ===
@@ -123,6 +137,12 @@ const Dashboard = () => {
     Consulta: "create",
   });
 
+  const handleLogout = () => {
+    logout();
+    toast.info("Você saiu da sua conta.");
+    navigate("/login", { replace: true });
+  };
+
   const handleConfirm = (card: any) => {
     const selectedOperation = operations[card.title as keyof typeof operations];
 
@@ -141,35 +161,42 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
-      <main className="container mx-auto p-4 md:p-6 lg:p-8">
+      <main className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 mt-16 sm:mt-20 md:mt-24">
         {/* Welcome Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-5 md:p-6 mb-4 sm:mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 sm:gap-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
                 {getSaudacao()}, {userName}!
               </h2>
-              <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold cursor-pointer hover:bg-blue-600 transition">
-                ?
-              </div>
+              <button
+                onClick={handleLogout}
+                className="ml-auto bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 text-sm sm:text-base"
+                title="Sair da conta"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span className="hidden sm:inline">Sair</span>
+              </button>
             </div>
             <p className="text-gray-600 text-sm md:text-base">
               Você tem consultas para marcar hoje. Vamos lá?
             </p>
           </div>
-          <div className="bg-blue-100 text-blue-800 px-5 py-3 rounded-full font-semibold text-sm md:text-base whitespace-nowrap">
+          <div className="bg-blue-100 text-blue-800 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold text-xs sm:text-sm md:text-base w-full md:w-auto text-center md:whitespace-nowrap">
             Consulta para o Marcos! / Fisioterapia
           </div>
         </div>
 
         {/* Grid de progresso + conquistas */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-6">
           {/* Progresso da Jornada */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-2xl font-bold mb-2 text-gray-800">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-5 md:p-6">
+            <h3 className="text-xl sm:text-2xl font-bold mb-2 text-gray-800">
               Progresso da Jornada
             </h3>
-            <p className="text-gray-600 mb-6 text-lg font-semibold">
+            <p className="text-gray-600 mb-4 sm:mb-6 text-base sm:text-lg font-semibold">
               {completedTasks}/{totalTasks} concluídas
             </p>
             <div className="space-y-3">
@@ -203,7 +230,7 @@ const Dashboard = () => {
           </div>
 
           {/* Conquistas */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-5 md:p-6">
             <h3 className="text-2xl font-bold mb-6 text-gray-800">
               Conquistas
             </h3>
@@ -256,20 +283,21 @@ const Dashboard = () => {
         </div>
 
         {/* === Cards CRUD === */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {cards.map((card, index) => {
             const selectedOperation = operations[card.title as keyof typeof operations];
 
             return (
               <div
                 key={index}
-                className={`bg-gradient-to-br ${card.gradient} rounded-2xl shadow-xl p-6 text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl`}
+                className={`bg-gradient-to-br ${card.gradient} rounded-2xl shadow-xl p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer animate-fade-in-up`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                  <div className="bg-white/20 p-2.5 sm:p-3 rounded-xl backdrop-blur-sm group-hover:bg-white/30 transition-all">
                     {card.icon}
                   </div>
-                  <h3 className="text-2xl font-bold">{card.title}</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold">{card.title}</h3>
                 </div>
 
                 <div className="space-y-4">
@@ -285,7 +313,7 @@ const Dashboard = () => {
                           [card.title]: e.target.value,
                         })
                       }
-                      className="w-full p-3 rounded-xl text-gray-800 font-medium focus:ring-4 focus:ring-white/30 focus:outline-none bg-white shadow-md transition"
+                      className="w-full p-2.5 sm:p-3 rounded-xl text-gray-800 font-medium focus:ring-4 focus:ring-white/30 focus:outline-none bg-white shadow-md transition hover:shadow-lg text-sm sm:text-base"
                     >
                       <option value="create">📝 Cadastrar</option>
                       <option value="read">👁️ Visualizar</option>
@@ -296,7 +324,7 @@ const Dashboard = () => {
 
                   <button
                     onClick={() => handleConfirm(card)}
-                    className="w-full bg-white text-gray-800 py-3 px-4 rounded-xl font-bold hover:bg-gray-50 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group"
+                    className="w-full bg-white text-gray-800 py-2.5 sm:py-3 px-4 rounded-xl font-bold hover:bg-gray-50 active:scale-95 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group text-sm sm:text-base"
                   >
                     <span>Confirmar</span>
                     <svg

@@ -1,17 +1,32 @@
 import { Link } from 'react-router-dom'
 import { HashLink } from 'react-router-hash-link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { isAuthenticated } from '../services/authService'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  // Verifica se o usuário está logado
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsLoggedIn(isAuthenticated())
+    }
+    
+    checkAuth()
+    
+    // Verifica a cada segundo se o estado mudou
+    const interval = setInterval(checkAuth, 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-8 py-6 bg-white shadow-md">
-      <h1 className="m-0 uppercase text-black font-bold text-xl group relative p-1">
+    <header className="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-4 sm:px-6 md:px-8 py-4 md:py-6 bg-white shadow-md">
+      <h1 className="m-0 uppercase text-black font-bold text-lg sm:text-xl md:text-2xl group relative p-1">
         <Link to="/" className="inline-block transition-all duration-500 ease-out transform group-hover:scale-105 group-hover:text-blue-600 group-hover:drop-shadow-[0_0_8px_rgba(37,99,235,0.4)]">
           Hera Corp.
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-all duration-600 ease-out pointer-events-none"></div>
@@ -20,25 +35,38 @@ const Header = () => {
       </h1>
       
       <nav className="hidden lg:block">
-        <ul className="flex justify-end gap-8 list-none font-bold text-gray-600 p-0 m-0">
-          <li className="relative cursor-pointer inline-block px-3 py-2 text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
+        <ul className="flex justify-end gap-4 xl:gap-8 list-none font-bold text-gray-600 p-0 m-0">
+          <li className="relative cursor-pointer inline-block px-2 xl:px-3 py-2 text-sm xl:text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
             <Link to="/">Início</Link>
           </li>
-          <li className="relative cursor-pointer inline-block px-3 py-2 text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
+          <li className="relative cursor-pointer inline-block px-2 xl:px-3 py-2 text-sm xl:text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
             <HashLink smooth to="/#sobre">Sobre</HashLink>
           </li>
-          <li className="relative cursor-pointer inline-block px-3 py-2 text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
+          <li className="relative cursor-pointer inline-block px-2 xl:px-3 py-2 text-sm xl:text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
             <HashLink smooth to="/#integrantes">Integrantes</HashLink>
           </li>
-          <li className="relative cursor-pointer inline-block px-3 py-2 text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
+          <li className="relative cursor-pointer inline-block px-2 xl:px-3 py-2 text-sm xl:text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
             <Link to="/faqpage">FAQ</Link>
           </li>
-          <li className="relative cursor-pointer inline-block px-3 py-2 text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
+          <li className="relative cursor-pointer inline-block px-2 xl:px-3 py-2 text-sm xl:text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
             <HashLink smooth to="/#solucao">Solução</HashLink>
           </li>
-          <li className="relative cursor-pointer inline-block px-3 py-2 text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
+          <li className="relative cursor-pointer inline-block px-2 xl:px-3 py-2 text-sm xl:text-base transition-colors duration-300 hover:text-blue-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-blue-600 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100">
             <HashLink smooth to="/#contato">Contato</HashLink>
           </li>
+          {isLoggedIn && (
+            <li>
+              <Link
+                to="/dashboard"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold text-sm xl:text-base hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+                Dashboard
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
 
@@ -93,6 +121,20 @@ const Header = () => {
             <li className="py-4 border-b border-gray-200 text-center">
               <HashLink smooth to="/#contato" className="text-gray-600 text-lg block hover:text-blue-600" onClick={toggleMenu}>Contato</HashLink>
             </li>
+            {isLoggedIn && (
+              <li className="py-4 text-center">
+                <Link
+                  to="/dashboard"
+                  onClick={toggleMenu}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md w-full"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                  Dashboard
+                </Link>
+              </li>
+            )}
           </ul>
         </aside>
       </div>

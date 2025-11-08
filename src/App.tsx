@@ -28,9 +28,11 @@ import ExcluirPaciente from './pages/ExcluirPaciente'
 import ExcluirMedico from './pages/ExcluirMedico'
 import ExcluirConsulta from './pages/ExcluirConsulta'
 import PrivateRoute from './components/PrivateRoute'
+import { ToastProvider } from './contexts/ToastContext'
 
 function App() {
   return (
+    <ToastProvider>
     <BrowserRouter>
       <Header />
       <ScrollToTop />
@@ -77,6 +79,7 @@ function App() {
       </Routes>
       <Footer />
     </BrowserRouter>
+    </ToastProvider>
   )
 }
 

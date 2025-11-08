@@ -7,8 +7,20 @@ import { Navigate, Outlet } from "react-router-dom";
  * Caso contrário, redireciona para /login.
  */
 export default function PrivateRoute() {
-  const isAuthenticated =
-    !!localStorage.getItem("auth_user") || !!localStorage.getItem("auth_token");
+  const authUser = localStorage.getItem("auth_user");
+  const authToken = localStorage.getItem("auth_token");
+  const isAuthenticated = !!authUser || !!authToken;
+
+  // Debug: Log do estado de autenticação
+  console.log('🔐 PrivateRoute - Verificando autenticação:', {
+    hasAuthUser: !!authUser,
+    hasAuthToken: !!authToken,
+    isAuthenticated
+  });
+
+  if (!isAuthenticated) {
+    console.log('❌ Não autenticado - Redirecionando para /login');
+  }
 
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 }

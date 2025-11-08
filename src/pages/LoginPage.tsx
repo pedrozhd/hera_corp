@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser, registerUser } from "../services/authService";
+import { useToast } from "../contexts/ToastContext";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
@@ -28,6 +30,15 @@ export default function LoginPage() {
     try {
       if (isLogin) {
         await loginUser(formData.email, formData.senha);
+        
+        // Debug: Verificar se o token foi salvo
+        const savedUser = localStorage.getItem("auth_user");
+        const savedToken = localStorage.getItem("auth_token");
+        console.log('✅ Login bem-sucedido:', {
+          hasAuthUser: !!savedUser,
+          hasAuthToken: !!savedToken
+        });
+        
         navigate("/dashboard", { replace: true });
       } else {
         await registerUser({
@@ -38,7 +49,7 @@ export default function LoginPage() {
 
         setFormData({ nome: "", email: "", senha: "" });
 
-        alert("Cadastro realizado com sucesso! Faça login para continuar.");
+        toast.success("Cadastro realizado com sucesso! Faça login para continuar.");
 
         setIsLogin(true);
       }
@@ -50,9 +61,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex flex-col justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+      <div className="absolute top-0 right-0 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+      <div className="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      <div className="mx-auto w-full max-w-md text-center relative z-10">
+        <div className="flex justify-center mb-4">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-lg">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+        </div>
+        <h2 className="mt-2 sm:mt-4 text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
           {isLogin ? "Entrar na sua conta" : "Criar nova conta"}
         </h2>
         <p className="mt-2 text-sm text-gray-600">
@@ -62,8 +84,8 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="mt-6 sm:mt-8 mx-auto w-full max-w-md relative z-10">
+        <div className="bg-white/80 backdrop-blur-sm py-6 sm:py-8 px-4 sm:px-6 md:px-10 shadow-2xl rounded-2xl border border-white/20">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {!isLogin && (
               <div>
@@ -73,7 +95,12 @@ export default function LoginPage() {
                 >
                   Nome completo
                 </label>
-                <div className="mt-1">
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
                   <input
                     id="nome"
                     name="nome"
@@ -81,7 +108,8 @@ export default function LoginPage() {
                     required
                     value={formData.nome}
                     onChange={handleChange}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="appearance-none block w-full pl-10 pr-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base transition"
+                    placeholder="Seu nome completo"
                   />
                 </div>
               </div>
@@ -94,7 +122,12 @@ export default function LoginPage() {
               >
                 Email
               </label>
-              <div className="mt-1">
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                  </svg>
+                </div>
                 <input
                   id="email"
                   name="email"
@@ -102,7 +135,8 @@ export default function LoginPage() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full pl-10 pr-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base transition"
+                  placeholder="seu@email.com"
                 />
               </div>
             </div>
@@ -114,7 +148,12 @@ export default function LoginPage() {
               >
                 Senha
               </label>
-              <div className="mt-1">
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
                 <input
                   id="senha"
                   name="senha"
@@ -122,7 +161,8 @@ export default function LoginPage() {
                   required
                   value={formData.senha}
                   onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full pl-10 pr-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base transition"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
@@ -131,11 +171,11 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 ${
                   loading
-                    ? "bg-blue-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] active:scale-[0.98]"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200`}
               >
                 {loading
                   ? isLogin
@@ -149,7 +189,14 @@ export default function LoginPage() {
           </form>
 
           {erro && (
-            <p className="text-red-500 text-sm text-center mt-4">{erro}</p>
+            <div className="mt-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg animate-shake">
+              <div className="flex items-center">
+                <svg className="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-red-700 text-sm font-medium">{erro}</p>
+              </div>
+            </div>
           )}
 
           <div className="mt-6">
@@ -171,7 +218,7 @@ export default function LoginPage() {
                   setIsLogin(!isLogin);
                   setErro("");
                 }}
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition"
+                className="w-full flex justify-center py-2.5 px-4 border-2 border-gray-200 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
               >
                 {isLogin ? "Criar nova conta" : "Fazer login"}
               </button>
