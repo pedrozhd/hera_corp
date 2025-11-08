@@ -70,17 +70,119 @@ hera_corporation/
 ├── public/                   # Arquivos estáticos servidos diretamente
 ├── src/                      # Código-fonte da aplicação (React + TS)
 │   ├── assets/              # Imagens, ícones e outros assets
-│   ├── components/          # Componentes reutilizáveis
+│   ├── components/          # Componentes reutilizáveis (Header, Footer, Toast, etc.)
+│   ├── contexts/            # Contextos React (ToastContext)
+│   ├── interfaces/          # Interfaces TypeScript centralizadas
 │   ├── pages/               # Páginas/rotas da aplicação
-│   ├── utils/               # Funções utilitárias e helpers
-│   ├── App.css              # Estilos globais
-│   └── App.tsx              # Componente raiz da aplicação
-├── .eslintrc.cjs            # Configuração do ESLint
+│   ├── services/            # Serviços de API e autenticação
+│   ├── App.tsx              # Componente raiz da aplicação
+│   ├── index.css            # Estilos globais e animações
+│   └── main.tsx             # Ponto de entrada da aplicação
 ├── index.html               # Template HTML principal
 ├── package.json             # Dependências e scripts
 ├── tailwind.config.js       # Configuração do Tailwind CSS
 └── tsconfig.json            # Configuração do TypeScript
 ```
+
+## 🔐 Como Usar o Sistema
+
+### 1️⃣ **Primeiro Acesso - Cadastro**
+
+1. Acesse a aplicação em [https://hera-corporation.vercel.app/](https://hera-corporation.vercel.app/)
+2. Clique em **"Faça login para ver a solução"** ou acesse diretamente `/login`
+3. Clique em **"Criar nova conta"** na parte inferior
+4. Preencha os dados:
+   - **Nome completo**
+   - **Email**
+   - **Senha**
+5. Clique em **"Cadastrar"**
+6. Você verá uma notificação de sucesso ✅
+7. Agora faça login com suas credenciais
+
+### 2️⃣ **Login**
+
+1. Na página de login (`/login`), preencha:
+   - **Email** cadastrado
+   - **Senha**
+2. Clique em **"Entrar"**
+3. Você será redirecionado automaticamente para o **Dashboard**
+
+### 3️⃣ **Navegação no Dashboard**
+
+Após o login, você terá acesso ao **Dashboard** com as seguintes funcionalidades:
+
+#### **📊 Gerenciar Pacientes**
+- **Cadastrar**: Adicionar novo paciente com dados completos
+- **Visualizar**: Ver lista de todos os pacientes
+- **Editar**: Atualizar informações de um paciente
+- **Excluir**: Remover um paciente do sistema
+
+#### **👨‍⚕️ Gerenciar Médicos**
+- **Cadastrar**: Adicionar novo médico (CRM, especialidade, etc.)
+- **Visualizar**: Ver lista de todos os médicos
+- **Editar**: Atualizar informações de um médico
+- **Excluir**: Remover um médico do sistema
+
+#### **📅 Gerenciar Consultas**
+- **Cadastrar**: Agendar nova consulta (paciente + médico + data/hora)
+- **Visualizar**: Ver lista de todas as consultas
+- **Editar**: Atualizar informações de uma consulta
+- **Excluir**: Cancelar uma consulta
+
+### 4️⃣ **Funcionalidades Especiais**
+
+#### **🔔 Notificações Toast**
+O sistema possui notificações elegantes que aparecem no canto superior direito:
+- ✅ **Sucesso** (verde): Operação realizada com sucesso
+- ❌ **Erro** (vermelho): Algo deu errado
+- ⚠️ **Aviso** (amarelo): Atenção necessária
+- ℹ️ **Info** (azul): Informação importante
+
+#### **🔐 Sessão Persistente**
+- Seu login fica salvo mesmo se você fechar o navegador
+- Você pode navegar entre as páginas sem precisar fazer login novamente
+- A sessão só expira quando você clica em **"Sair"**
+
+#### **🚪 Logout**
+Para sair da conta:
+1. No Dashboard, clique no botão vermelho **"Sair"** no canto superior direito
+2. Você será redirecionado para a página de login
+3. Sua sessão será encerrada
+
+#### **📱 Acesso Rápido ao Dashboard**
+Quando logado, você verá um botão **"Dashboard"** no header em todas as páginas para acesso rápido!
+
+### 5️⃣ **Fluxo Completo de Uso**
+
+```
+1. Cadastro → 2. Login → 3. Dashboard → 4. Escolher operação (CRUD)
+                    ↓
+              5. Executar ação → 6. Ver notificação → 7. Continuar usando
+                    ↓
+              8. Logout (quando terminar)
+```
+
+## 🎨 Recursos Visuais
+
+- ✨ **Animações suaves** em cards e botões
+- 🎨 **Gradientes modernos** em botões e backgrounds
+- 📱 **Totalmente responsivo** (mobile, tablet, desktop)
+- 🌈 **Feedback visual** em todas as ações
+- 🎯 **Interface intuitiva** e fácil de usar
+
+## 🔗 API Backend
+
+A aplicação consome a API REST hospedada em:
+```
+https://hera-api.onrender.com/hera-api
+```
+
+**Endpoints disponíveis:**
+- `POST /login` - Autenticação
+- `POST /usuarios` - Cadastro de usuários
+- `GET/POST/PUT/DELETE /pacientes` - CRUD de pacientes
+- `GET/POST/PUT/DELETE /medicos` - CRUD de médicos
+- `GET/POST/PUT/DELETE /consultas` - CRUD de consultas
 
 ## 🎯 Pilares da Solução
 - Automação de comunicação (WhatsApp/Telegram) com mensagens segmentadas.
