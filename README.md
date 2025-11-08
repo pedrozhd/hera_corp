@@ -88,7 +88,7 @@ hera_corporation/
 
 ### 1️⃣ **Primeiro Acesso - Cadastro**
 
-1. Acesse a aplicação em [https://hera-corporation.vercel.app/](https://hera-corporation.vercel.app/)
+1. Acesse a aplicação em [https://hera-corp-bihh.vercel.app/](https://hera-corp-bihh.vercel.app/)
 2. Clique em **"Faça login para ver a solução"** ou acesse diretamente `/login`
 3. Clique em **"Criar nova conta"** na parte inferior
 4. Preencha os dados:
@@ -202,7 +202,7 @@ https://hera-api.onrender.com/hera-api
 
 ## 🤝 Link do Repositório, Projeto na Vercel e Youtube
 - https://github.com/pedrozhd/hera_corp.git
-- https://hera-corporation.vercel.app/
+- https://hera-corp-bihh.vercel.app/
 - https://youtu.be/76jVMzFffsM
 
 ## 📄 Licença
