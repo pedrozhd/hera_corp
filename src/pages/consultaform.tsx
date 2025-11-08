@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import type { ConsultaFormData } from '../interfaces';
 
 const ConsultaForm = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ConsultaFormData>({
     paciente: '',
     medico: '',
     dataConsulta: '',

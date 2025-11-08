@@ -2,38 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-
-interface Telefone {
-  ddd: string;
-  numero: string;
-  tipoDeTelefone: string;
-}
-
-interface Endereco {
-  cep: string;
-  logradouro: string;
-  complemento?: string;
-  bairro: string;
-  estado: string;
-}
-
-interface Acompanhante {
-  nome: string;
-  email: string;
-  parentesco: string;
-  telefone?: Telefone;
-}
-
-interface Paciente {
-  id: number;
-  nome: string;
-  cpf?: string;
-  email: string;
-  telefone?: Telefone;
-  status: string;
-  endereco?: Endereco;
-  acompanhante?: Acompanhante;
-}
+import type { Paciente } from "../interfaces";
 
 const ListaPacientes = () => {
   const navigate = useNavigate();
@@ -192,13 +161,13 @@ const ListaPacientes = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
-                          onClick={() => handleEditar(p.id)}
+                          onClick={() => p.id && handleEditar(p.id)}
                           className="text-blue-600 hover:text-blue-900 mr-4"
                         >
                           Editar
                         </button>
                         <button
-                          onClick={() => handleExcluir(p.id)}
+                          onClick={() => p.id && handleExcluir(p.id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           Excluir

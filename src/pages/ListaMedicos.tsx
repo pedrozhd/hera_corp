@@ -2,22 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-
-interface Telefone {
-  ddd: string;
-  numero: string;
-  tipoDeTelefone: string;
-}
-
-interface Medico {
-  id: number;
-  nome: string;
-  crm: string;
-  especialidade: string;
-  email: string;
-  status: string;
-  telefone?: Telefone;
-}
+import type { Medico } from "../interfaces";
 
 const ListaMedicos = () => {
   const navigate = useNavigate();
@@ -190,13 +175,13 @@ const ListaMedicos = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
-                          onClick={() => handleEditar(m.id)}
+                          onClick={() => m.id && handleEditar(m.id)}
                           className="text-blue-600 hover:text-blue-900 mr-4"
                         >
                           Editar
                         </button>
                         <button
-                          onClick={() => handleExcluir(m.id)}
+                          onClick={() => m.id && handleExcluir(m.id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           Excluir

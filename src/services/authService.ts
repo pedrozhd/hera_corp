@@ -1,15 +1,9 @@
+import type { AuthUser } from '../interfaces';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hera-api.onrender.com';
 const LOGIN_ENDPOINT = `${API_BASE_URL}/hera-api/login`;
 const REGISTER_ENDPOINT = `${API_BASE_URL}/hera-api/usuarios`;
 const AUTH_USER_STORAGE_KEY = 'auth_user';
-
-export type AuthUser = {
-  id?: number;
-  nome?: string;
-  email: string;
-  senha: string;
-  token?: string;
-};
 
 /**
  * Faz login do usuário e salva token/usuário no localStorage.

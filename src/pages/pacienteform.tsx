@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import type { PacienteFormData } from '../interfaces';
 
 const PacienteForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PacienteFormData>({
     nome: '',
     email: '',
     sexo: '',
@@ -73,6 +74,7 @@ const PacienteForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     // Converter datas para formato ISO completo
     const agora = new Date().toISOString().split('.')[0]; // remove milissegundos
@@ -134,6 +136,8 @@ const PacienteForm = () => {
     } catch (error) {
       console.error('❌ Erro ao cadastrar paciente:', error);
       alert('Erro ao cadastrar paciente. Veja o console para detalhes.');
+    } finally {
+      setLoading(false);
     }
   };
 

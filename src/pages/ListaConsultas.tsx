@@ -2,29 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-
-interface Paciente {
-  id: number;
-  nome: string;
-}
-
-interface Medico {
-  id: number;
-  nome: string;
-  especialidade?: string;
-}
-
-interface Consulta {
-  id: number;
-  paciente: Paciente;
-  medico: Medico;
-  dataConsulta: string;
-  horarioConsulta: string;
-  tipoConsulta: string;
-  status: string;
-  observacoes?: string;
-  linkTeleconsulta?: string;
-}
+import type { Consulta } from "../interfaces";
 
 const ListaConsultas = () => {
   const navigate = useNavigate();
@@ -170,10 +148,10 @@ const ListaConsultas = () => {
                   {consultas.map((c) => (
                     <tr key={c.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {c.paciente?.nome || "—"}
+                        {typeof c.paciente === 'object' ? c.paciente.nome : c.paciente || "—"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {c.medico?.nome || "—"}
+                        {typeof c.medico === 'object' ? c.medico.nome : c.medico || "—"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {new Date(c.dataConsulta).toLocaleDateString("pt-BR")}
@@ -201,13 +179,13 @@ const ListaConsultas = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
-                          onClick={() => handleEditar(c.id)}
+                          onClick={() => c.id && handleEditar(c.id)}
                           className="text-blue-600 hover:text-blue-900 mr-4"
                         >
                           Editar
                         </button>
                         <button
-                          onClick={() => handleExcluir(c.id)}
+                          onClick={() => c.id && handleExcluir(c.id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           Excluir

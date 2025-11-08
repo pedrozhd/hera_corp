@@ -1,4 +1,4 @@
-import AboutCard from '../components/aboutcard'
+import AboutCard from '../components/AboutCard'
 import nosTresImage from '../assets/nos_tres.jpg'
 
 const About = () => {

@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ConfirmacaoExclusao from '../components/ConfirmacaoExclusaoProps';
+import ConfirmacaoExclusao from '../components/ConfirmacaoExclusao';
 import api from '../services/api';
-
-interface Paciente {
-  id?: number;
-  nome: string;
-}
+import type { Paciente } from '../interfaces';
 
 const ExcluirPaciente = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [carregando, setCarregando] = useState(false);
-  const [paciente, setPaciente] = useState<Paciente>({ nome: '' });
+  const [paciente, setPaciente] = useState<Partial<Paciente>>({ nome: '' });
   const [mensagemStatus, setMensagemStatus] = useState<string | null>(null);
 
   // Busca paciente ao carregar

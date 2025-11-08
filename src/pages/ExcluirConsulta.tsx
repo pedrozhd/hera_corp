@@ -1,21 +1,15 @@
 // src/pages/ExcluirConsulta.tsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ConfirmacaoExclusao from '../components/ConfirmacaoExclusaoProps';
+import ConfirmacaoExclusao from '../components/ConfirmacaoExclusao';
 import api from '../services/api';
-
-interface Consulta {
-  id?: number;
-  paciente: string;
-  data: string;
-  horario?: string;
-}
+import type { Consulta } from '../interfaces';
 
 const ExcluirConsulta = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [carregando, setCarregando] = useState(false);
-  const [consulta, setConsulta] = useState<Consulta>({ paciente: '', data: '' });
+  const [consulta, setConsulta] = useState<Partial<Consulta>>({ paciente: '', data: '' });
   const [mensagemStatus, setMensagemStatus] = useState<string | null>(null);
 
   // 🔍 Busca a consulta pelo ID ao carregar

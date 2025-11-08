@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import type { MedicoFormData } from "../interfaces";
 
 const MedicoForm = () => {
   const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState("");
+  const [, setErro] = useState("");
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<MedicoFormData>({
     nome: "",
     crm: "",
     especialidade: "",
