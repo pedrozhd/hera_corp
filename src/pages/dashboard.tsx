@@ -145,7 +145,7 @@ const Dashboard = () => {
                 </svg>
               ),
               gradient: 'from-blue-500 to-blue-700',
-              route: '/paciente'
+              route: '/pacientes'
             },
             { 
               title: 'Médico', 
@@ -155,7 +155,7 @@ const Dashboard = () => {
                 </svg>
               ),
               gradient: 'from-indigo-500 to-indigo-700',
-              route: '/medico'
+              route: '/medicos'
             },
             { 
               title: 'Consulta', 
@@ -165,7 +165,7 @@ const Dashboard = () => {
                 </svg>
               ),
               gradient: 'from-purple-500 to-purple-700',
-              route: '/consulta'
+              route: '/consultas'
             },
           ].map((card, index) => {
             const [selectedOperation, setSelectedOperation] = useState('create');
